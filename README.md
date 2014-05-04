@@ -1,4 +1,3 @@
-cider-collector-circleci
-========================
+# cider-collector-circleci #
 
-Cider collector for Circle CI
+Cider collector for Circle CI build events
