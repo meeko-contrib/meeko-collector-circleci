@@ -43,13 +43,13 @@ func (handler *CircleCiWebhookHandler) ServeHTTP(w http.ResponseWriter, r *http.
 	var event CircleCiEvent
 	if err := json.Unmarshal(eventBody, &event); err != nil {
 		http.Error(w, "Invalid Json", http.StatusBadRequest)
-		handler.logger.Warnf("POST from %v: Invalid json received from: %v", r.URL, err)
+		handler.logger.Warnf("POST from %v: Invalid json: %v", r.URL, err)
 		return
 	}
 
 	if event.Payload == nil {
 		http.Error(w, "Payload Missing", http.StatusBadRequest)
-		handler.logger.Warnf("POST from %v: Payload missing", r.URL)
+		handler.logger.Warnf("POST from %v: Payload key missing", r.URL)
 	}
 
 	// Publish the event.
