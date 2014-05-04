@@ -35,7 +35,7 @@ func (handler *CircleCiWebhookHandler) ServeHTTP(w http.ResponseWriter, r *http.
 	eventBody, err := ioutil.ReadAll(bodyReader)
 	if err != nil {
 		http.Error(w, "Request Payload Too Large", http.StatusRequestEntityTooLarge)
-		handler.logger.Warnf("POST from %v: Request payload too large", r.URL)
+		handler.logger.Warnf("POST from %v: Request payload too large", r.RemoteAddr)
 		return
 	}
 
@@ -43,21 +43,23 @@ func (handler *CircleCiWebhookHandler) ServeHTTP(w http.ResponseWriter, r *http.
 	var event CircleCiEvent
 	if err := json.Unmarshal(eventBody, &event); err != nil {
 		http.Error(w, "Invalid Json", http.StatusBadRequest)
-		handler.logger.Warnf("POST from %v: Invalid json: %v", r.URL, err)
+		handler.logger.Warnf("POST from %v: Invalid json: %v", r.RemoteAddr, err)
 		return
 	}
 
 	if event.Payload == nil {
 		http.Error(w, "Payload Missing", http.StatusBadRequest)
-		handler.logger.Warnf("POST from %v: Payload key missing", r.URL)
+		handler.logger.Warnf("POST from %v: Payload key missing", r.RemoteAddr)
+		return
 	}
 
 	// Publish the event.
 	if err := handler.forward("circleci.build", event.Payload); err != nil {
 		http.Error(w, "Event Not Published", http.StatusInternalServerError)
 		handler.logger.Critical(err)
+		return
 	}
 
-	handler.logger.Infof("POST from %v: Forwarding circleci.build", r.URL)
+	handler.logger.Infof("POST from %v: Forwarding circleci.build", r.RemoteAddr)
 	w.WriteHeader(http.StatusAccepted)
 }
