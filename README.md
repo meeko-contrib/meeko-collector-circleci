@@ -1,5 +1,8 @@
 # meeko-collector-circleci #
 
+[![Build
+Status](https://drone.io/github.com/meeko-contrib/meeko-collector-circleci/status.png)](https://drone.io/github.com/meeko-contrib/meeko-collector-circleci/latest)
+
 Meeko collector for CircleCI webhooks
 
 ## Meeko Variables ##
